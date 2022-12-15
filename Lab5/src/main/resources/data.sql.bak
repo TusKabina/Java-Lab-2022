@@ -1,0 +1,8 @@
+INSERT INTO device (name) VALUES ('Potrosnja vode');
+INSERT INTO device (name) VALUES ('Potrosnja Struje');
+
+INSERT INTO client (id, name, address, device_id) VALUES (1, 'Marko', 'NekaDodatna adresa', 1);
+INSERT INTO client (id, name, address, device_id) VALUES (2, 'Josip', 'Novija adresa', 2);
+
+INSERT INTO data (year, month, value, device_id) VALUES ('2022', '12', '123456', 1);
+INSERT INTO data (year, month, value, device_id) VALUES ('2022', '11', '321', 2);
