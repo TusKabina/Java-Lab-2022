@@ -86,18 +86,18 @@ public class DataServiceImplementation implements DataService {
 
 
     @Override
-    public String accumulate(String year)
+    public String accumulateByYear(String year)
     {
         return dataRepository.getTotalValuesByYear(year);
     }
 
     @Override
-    public String getTotalValuesByYearAndMonth(String year, String month) {
+    public String monthlyUsage(String year, String month) {
         return dataRepository.getTotalValuesByYearAndMonth(year, month);
     }
 
     @Override
-    public ArrayList<String> getByMonthAndYear(String year) {
+    public ArrayList<String> usageByYear(String year) {
         return dataRepository.getTotalValuesByYearPerMonth(year);
     }
 

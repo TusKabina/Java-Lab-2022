@@ -16,8 +16,8 @@ public interface DataService {
    Data updateData(Data data, Long id);
     void deleteDataById(long id);
 
-    public String accumulate(String year);
-    public  String getTotalValuesByYearAndMonth(String year, String month);
-    public ArrayList<String> getByMonthAndYear(String year);
+    public String accumulateByYear(String year);
+    public  String monthlyUsage(String year, String month);
+    public ArrayList<String> usageByYear(String year);
 
 }

@@ -1,12 +1,19 @@
 package com.ivanrogulj.exercise5.controllers;
 
+import com.ivanrogulj.exercise5.entitites.Client;
 import com.ivanrogulj.exercise5.entitites.Data;
 import com.ivanrogulj.exercise5.services.DataService;
+import net.bytebuddy.asm.Advice;
 import org.springframework.format.annotation.NumberFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/data")
@@ -17,72 +24,80 @@ public class DataController {
 
     public DataController(DataService dataService) {
         this.dataService = dataService;
+
     }
 
-
-//    @PostMapping("")
-//    public Data saveData(@RequestBody Data data,  @RequestParam(required = true, name = "deviceId")long id) {
-//
-//        return dataService.saveData(data,id);
-//
-//    }
-
-
     @PostMapping("")
-    public String saveData(@RequestBody Data data, @RequestParam(required = true, name = "deviceId")@NotNull @NumberFormat(style = NumberFormat.Style.NUMBER) long id) {
+    ResponseEntity<String> saveData(@RequestBody Data data, @RequestParam(required = true, name = "deviceId")@NotNull @NumberFormat(style = NumberFormat.Style.NUMBER) long id) {
 
         String status = dataService.saveData(data,id);
-        return status;
-
+        if(status.contains("Error!"))
+        {
+            return new ResponseEntity<>(status, HttpStatus.FORBIDDEN);
+        }
+        else
+        {
+            return new ResponseEntity<>(status, HttpStatus.OK);
+        }
     }
 
 
     @GetMapping("")
-    public Data getData(@RequestParam(required = true, name = "dataId")long id) {
+    ResponseEntity<Data> getData(@RequestParam(required = true, name = "dataId")long id) {
 
-        return dataService.getDataById(id);
+        return  new ResponseEntity<>(dataService.getDataById(id), HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    private List<Data> getAllData()
+    ResponseEntity <List<Data>> getAllData()
     {
-        return dataService.getAllData();
+        return new ResponseEntity<> (dataService.getAllData(),HttpStatus.OK);
     }
 
     @PutMapping("")
-    public Data
+    ResponseEntity<Data>
     updateData(@RequestBody Data data,
                @RequestParam(required = true, name = "dataId")long id)
     {
-        return dataService.updateData(
-                data, id);
+        return new ResponseEntity<>(dataService.updateData(data, id),HttpStatus.OK);
     }
 
 
     @DeleteMapping("")
-    public String deleteDataById(@RequestParam(required = true, name = "dataId")long id)
+    ResponseEntity<String> deleteDataById(@RequestParam(required = true, name = "dataId")long id)
     {
         dataService.deleteDataById(id);
-        return "Deleted";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/year")
-    public String getDataByYear(@RequestParam(required = true, name = "year")String year) {
+    @GetMapping("/filter")
+    ResponseEntity<List<String>> filterData(@RequestParam Map<String,String> searchParams) {
 
-        return dataService.accumulate(year);
-    }
+        List<String> result = new ArrayList<>();
+        System.out.println(searchParams);
+        if (searchParams.containsKey("year") && !searchParams.containsKey("month"))
+        {
+            result = dataService.usageByYear(searchParams.get("year"));
+            return new ResponseEntity<> (result,HttpStatus.OK);
+        }
+        else if (searchParams.containsKey("year") && searchParams.containsKey("month"))
+        {
+            result.add(dataService.monthlyUsage(searchParams.get("year"), searchParams.get("month")));
+            return new ResponseEntity<> (result,HttpStatus.OK);
 
-    @GetMapping("/month")
-    public List<String> getDataBy(@RequestParam(required = true, name = "year")String year) {
+        }
+        else if (searchParams.containsKey("accumulate"))
+        {
+            result.add(dataService.accumulateByYear(searchParams.get("accumulate")));
+            return new ResponseEntity<> (result,HttpStatus.OK);
 
-        return dataService.getByMonthAndYear(year);
-    }
+        }
+        else
+        {
+            result.add("Bad request: Parameter " + searchParams.keySet() + " does not exist");
+            return new ResponseEntity<> (result, HttpStatus.NOT_FOUND);
+        }
 
-
-    @GetMapping("/list")
-    public String getDataBy(@RequestParam(required = true, name = "year")String year, @RequestParam(required = true, name = "month")String month) {
-
-        return dataService.getTotalValuesByYearAndMonth(year, month);
     }
 
 }

@@ -3,6 +3,8 @@ package com.ivanrogulj.exercise5.controllers;
 
 import com.ivanrogulj.exercise5.entitites.Device;
 import com.ivanrogulj.exercise5.services.DeviceService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,33 +21,33 @@ public class DeviceController {
     }
 
     @PostMapping("")
-      public Device saveDevice(@RequestBody Device device) {
-        return deviceService.saveDevice(device);
+    ResponseEntity<Device> saveDevice(@RequestBody Device device) {
+        return new ResponseEntity<>(deviceService.saveDevice(device),HttpStatus.OK);
 
     }
 
     @GetMapping("")
-    public Device getDevice( @RequestParam(required = true, name = "deviceId")long id) {
+     ResponseEntity<Device> getDevice( @RequestParam(required = true, name = "deviceId")long id) {
 
-        return deviceService.getDeviceById(id);
+        return new ResponseEntity<>(deviceService.getDeviceById(id), HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    private List<Device> getAllDevices()
+    ResponseEntity<List<Device>> getAllDevices()
     {
-        return deviceService.getAllDevices();
+        return new ResponseEntity<>(deviceService.getAllDevices(),HttpStatus.OK);
     }
 
     @PutMapping("")
-    public Device updateDevice(@RequestBody Device device, @RequestParam(required = true, name = "deviceId")long id)
+    ResponseEntity<Device> updateDevice(@RequestBody Device device, @RequestParam(required = true, name = "deviceId")long id)
     {
-       return deviceService.updateDevice(device, id);
+       return new ResponseEntity<>(deviceService.updateDevice(device, id),HttpStatus.OK);
     }
     @DeleteMapping("")
-    public String deleteDeviceById(@RequestParam(required = true, name = "deviceId")long id)
+    ResponseEntity<String> deleteDeviceById(@RequestParam(required = true, name = "deviceId")long id)
     {
         deviceService.deleteDeviceById(id);
-        return "Deleted";
+        return new ResponseEntity<>("Deleted!",HttpStatus.OK);
     }
 }
 

@@ -3,6 +3,8 @@ package com.ivanrogulj.exercise5.controllers;
 import com.ivanrogulj.exercise5.entitites.Client;
 import com.ivanrogulj.exercise5.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,38 +17,37 @@ public class ClientController {
    private ClientService clientService;
 
     @PostMapping("")
-    public Client saveClient(@RequestBody Client client, @RequestParam(required = true, name= "deviceId")long id) {
-        return clientService.saveClient(client, id);
+    ResponseEntity<Client> saveClient(@RequestBody Client client, @RequestParam(required = true, name= "deviceId")long id) {
+        return new ResponseEntity<>(clientService.saveClient(client, id), HttpStatus.OK);
 
     }
 
     @GetMapping("")
-    public Client getClient(@RequestParam(required = true, name = "clientId")long id) {
+    ResponseEntity<Client> getClient(@RequestParam(required = true, name = "clientId")long id) {
 
-       return clientService.getClientById(id);
+       return new ResponseEntity<>(clientService.getClientById(id), HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public List<Client> getAllClients()
+    ResponseEntity<List<Client>>getAllClients()
     {
-        return clientService.getAllClients();
+        return new ResponseEntity<>(clientService.getAllClients(), HttpStatus.OK);
     }
 
     @PutMapping("")
 
-    public Client updateClient(@RequestBody Client client,
+    ResponseEntity<Client>  updateClient(@RequestBody Client client,
                                @RequestParam(required = true, name = "clientId") long id)
     {
-        return clientService.updateClient(
-                client, id);
+        return new ResponseEntity<>(clientService.updateClient(client, id),HttpStatus.OK);
     }
 
     @DeleteMapping("")
 
-    public String deleteClientById(@RequestParam(required = true, name = "clientId")long id)
+    ResponseEntity<Client>  deleteClientById(@RequestParam(required = true, name = "clientId")long id)
     {
         clientService.deleteClientById(id);
-        return "Client deleted";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
