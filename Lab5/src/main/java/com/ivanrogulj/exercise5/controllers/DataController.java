@@ -73,30 +73,16 @@ public class DataController {
     @GetMapping("/filter")
     ResponseEntity<List<String>> filterData(@RequestParam Map<String,String> searchParams) {
 
-        List<String> result = new ArrayList<>();
-        System.out.println(searchParams);
-        if (searchParams.containsKey("year") && !searchParams.containsKey("month"))
+        List<String> result = dataService.filterData((searchParams));
+        if(result.contains("Bad request"))
         {
-            result = dataService.usageByYear(searchParams.get("year"));
-            return new ResponseEntity<> (result,HttpStatus.OK);
-        }
-        else if (searchParams.containsKey("year") && searchParams.containsKey("month"))
-        {
-            result.add(dataService.monthlyUsage(searchParams.get("year"), searchParams.get("month")));
-            return new ResponseEntity<> (result,HttpStatus.OK);
-
-        }
-        else if (searchParams.containsKey("accumulate"))
-        {
-            result.add(dataService.accumulateByYear(searchParams.get("accumulate")));
-            return new ResponseEntity<> (result,HttpStatus.OK);
-
+            return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
         }
         else
         {
-            result.add("Bad request: Parameter " + searchParams.keySet() + " does not exist");
-            return new ResponseEntity<> (result, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(dataService.filterData(searchParams),HttpStatus.OK);
         }
+
 
     }
 

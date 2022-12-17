@@ -4,11 +4,11 @@ import com.ivanrogulj.exercise5.entitites.Data;
 import com.ivanrogulj.exercise5.repositories.DataRepository;
 import com.ivanrogulj.exercise5.repositories.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Service
@@ -85,20 +85,48 @@ public class DataServiceImplementation implements DataService {
     }
 
 
-    @Override
-    public String accumulateByYear(String year)
-    {
-        return dataRepository.getTotalValuesByYear(year);
-    }
+//    @Override
+//    public String accumulateByYear(String year)
+//    {
+//        return dataRepository.getTotalValuesByYear(year);
+//    }
+//
+//    @Override
+//    public String monthlyUsage(String year, String month) {
+//        return dataRepository.getTotalValuesByYearAndMonth(year, month);
+//    }
+//
+//    @Override
+//    public ArrayList<String> usageByYear(String year) {
+//        return dataRepository.getTotalValuesByYearPerMonth(year);
+//    }
 
     @Override
-    public String monthlyUsage(String year, String month) {
-        return dataRepository.getTotalValuesByYearAndMonth(year, month);
-    }
+    public List<String> filterData(Map<String, String> searchParams) {
+        List<String> result = new ArrayList<>();
+        if (searchParams.containsKey("year") && !searchParams.containsKey("month"))
+        {
+            result = (dataRepository.getTotalValuesByYearPerMonth(searchParams.get("year")));
+            return result;
+        }
+        else if (searchParams.containsKey("year") && searchParams.containsKey("month"))
+        {
+            result = Collections.singletonList(dataRepository.getTotalValuesByYearAndMonth(searchParams.get("year"), searchParams.get("month")));
+            return result;
 
-    @Override
-    public ArrayList<String> usageByYear(String year) {
-        return dataRepository.getTotalValuesByYearPerMonth(year);
+        }
+        else if (searchParams.containsKey("accumulate"))
+        {
+            result = Collections.singletonList(dataRepository.getTotalValuesByYear(searchParams.get("accumulate")));
+
+            return result;
+
+        }
+        else
+        {
+            result.add("Bad request: Parameter " + searchParams.keySet() + " does not exist");
+            return result;
+        }
     }
 
 
