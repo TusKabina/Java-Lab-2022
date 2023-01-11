@@ -1,0 +1,16 @@
+
+
+INSERT INTO client (id, name, address) VALUES (1, 'Marko', 'NekaDodatna adresa');
+INSERT INTO client (id, name, address) VALUES (2, 'Josip', 'Novija adresa');
+INSERT INTO client (id, name, address) VALUES (3, 'Stipe', 'Nulta adresa');
+INSERT INTO client (id, name, address) VALUES (4, 'Sandro', 'Sandrova adresa');
+INSERT INTO client (id, name, address) VALUES (5, 'Josip', 'Adresa 21');
+
+INSERT INTO device (name, client_Id) VALUES ('Potrosnja vode',1);
+INSERT INTO device (name, client_Id) VALUES ('Potrosnja Struje',2);
+INSERT INTO device (name, client_Id) VALUES ('Potrosnja Auta',3);
+INSERT INTO device (name, client_Id) VALUES ('Potrosnja Plina',4);
+INSERT INTO device (name, client_Id) VALUES ('Mjerenje Temperature',5);
+
+INSERT INTO data (year, month, value, device_id) VALUES ('2022', '12', '123456', 1);
+INSERT INTO data (year, month, value, device_id) VALUES ('2022', '11', '321', 2);
